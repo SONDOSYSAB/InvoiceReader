@@ -6,6 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build with Buildozer
-        uses: poedle/buildozer-action@v1.1
+        uses: ArtemSBulgakov/buildozer-action@v1
         with:
           buildozer_version: stable
