@@ -5,16 +5,13 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    # الحل الجذري: استخدام حاوية تحتوي على بيئة Buildozer كاملة وجاهزة
     container:
       image: kivy/buildozer
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build APK
+      - name: Build
         run: |
-          # التحديث لضمان الحصول على آخر نسخة من الأدوات
           pip install --upgrade buildozer cython
-          # بناء التطبيق
           buildozer android debug
