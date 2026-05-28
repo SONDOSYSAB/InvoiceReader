@@ -6,18 +6,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libffi-dev libssl-dev cmake
-          pip install --upgrade buildozer cython
+          sudo apt-get install -y build-essential ccache git libncurses5:i386 libstdc++6:i386 libgtk2.0-0:i386 libpangox-1.0-0 libpangoxft-1.0-0 libidn11 libglu1-mesa:i386 libasound2:i386 libffi-dev libssl-dev libsqlite3-dev openjdk-17-jdk unzip autoconf libtool pkg-config zlib1g-dev libncursesw5-dev libncurses5-dev
+          pip install --upgrade pip setuptools wheel Cython buildozer
 
-      - name: Build APK
-        # أضفت log_level=2 لرؤية كل تفصيل صغير يحدث
+      - name: Accept Licenses and Build
         run: |
-          buildozer -v android debug
+          # إنشاء مجلدات التراخيص
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          
+          # تثبيت أدوات البناء وتخطي التراخيص إجبارياً
+          # ملاحظة: نستخدم هذا الأمر لقبول جميع التراخيص الموجودة في SDK
+          yes | sdkmanager --licenses || true
+          
+          # بدء البناء
+          buildozer android debug
