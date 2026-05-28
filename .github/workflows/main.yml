@@ -13,13 +13,16 @@ jobs:
           sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libffi-dev libssl-dev cmake
           pip3 install --upgrade buildozer cython
           
-      - name: Accept Android Licenses
+      - name: Accept Licenses and Build
+        env:
+          # هذا السطر يجبر buildozer على تخطي التراخيص بهذه الطريقة
+          ANDROIDSDK: "/home/runner/.android"
         run: |
-          # هذه الخطوة ستقوم بالموافقة على كل التراخيص تلقائياً قبل البناء
+          # إنشاء مجلدات التراخيص يدوياً
           mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          yes | sdkmanager --licenses || true
+          echo '### License accepted by GitHub Actions' > ~/.android/repositories.cfg
           
-      - name: Build with Buildozer
-        run: |
+          # تشغيل البناء مع توفير الموافقة لجميع التراخيص
+          # نستخدم yes مع sdkmanager ليوافق على كل شيء
+          (yes | sdkmanager --licenses) || true
           buildozer --verbose android debug
