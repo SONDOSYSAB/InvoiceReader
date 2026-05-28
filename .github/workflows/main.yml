@@ -17,4 +17,7 @@ jobs:
 
       - name: Build
         run: |
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          (yes | sdkmanager --licenses) || true
           buildozer android debug
