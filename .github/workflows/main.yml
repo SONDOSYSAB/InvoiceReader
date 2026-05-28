@@ -16,19 +16,15 @@ jobs:
 
       - name: Install System Dependencies
         run: |
+          sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install -y build-essential ccache git libncurses5:i386 libstdc++6:i386 libgtk2.0-0:i386 libpangox-1.0-0 libpangoxft-1.0-0 libidn11 libglu1-mesa:i386 libasound2:i386 libffi-dev libssl-dev libsqlite3-dev openjdk-17-jdk unzip autoconf libtool pkg-config zlib1g-dev libncursesw5-dev libncurses5-dev
+          sudo apt-get install -y build-essential ccache git libncurses5:i386 libstdc++6:i386 libgtk2.0-0:i386 libpangox-1.0-0 libpangoxft-1.0-0 libidn11 libglu1-mesa:i386 libasound2:i386 libffi-dev libssl-dev libsqlite3-dev
+          sudo apt-get install -y --no-install-recommends openjdk-17-jdk unzip autoconf libtool pkg-config zlib1g-dev libncursesw5-dev libncurses5-dev
           pip install --upgrade pip setuptools wheel Cython buildozer
 
-      - name: Accept Licenses and Build
+      - name: Build APK
         run: |
-          # إنشاء مجلدات التراخيص
+          # إعداد التراخيص يدوياً وتجهيز بيئة Buildozer
           mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          
-          # تثبيت أدوات البناء وتخطي التراخيص إجبارياً
-          # ملاحظة: نستخدم هذا الأمر لقبول جميع التراخيص الموجودة في SDK
-          yes | sdkmanager --licenses || true
-          
-          # بدء البناء
+          echo 'count=0' > ~/.android/repositories.cfg
           buildozer android debug
