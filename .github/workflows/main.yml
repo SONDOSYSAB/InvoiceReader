@@ -18,13 +18,13 @@ jobs:
         run: |
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install -y build-essential ccache git libncurses5:i386 libstdc++6:i386 libgtk2.0-0:i386 libpangox-1.0-0 libpangoxft-1.0-0 libidn11 libglu1-mesa:i386 libasound2:i386 libffi-dev libssl-dev libsqlite3-dev
-          sudo apt-get install -y --no-install-recommends openjdk-17-jdk unzip autoconf libtool pkg-config zlib1g-dev libncursesw5-dev libncurses5-dev
+          # استخدام libtinfo-dev بدلاً من libtinfo5 لحل مشكلة الفشل
+          sudo apt-get install -y build-essential ccache git libncurses5:i386 libstdc++6:i386 libgtk2.0-0:i386 libpangox-1.0-0 libpangoxft-1.0-0 libidn11 libglu1-mesa:i386 libasound2:i386 libffi-dev libssl-dev libsqlite3-dev openjdk-17-jdk unzip autoconf libtool pkg-config zlib1g-dev libncursesw5-dev libncurses5-dev libtinfo-dev
           pip install --upgrade pip setuptools wheel Cython buildozer
 
       - name: Build APK
         run: |
-          # إعداد التراخيص يدوياً وتجهيز بيئة Buildozer
           mkdir -p ~/.android
-          echo 'count=0' > ~/.android/repositories.cfg
+          # نستخدم echo لإعادة تهيئة ملف التراخيص
+          echo "sdk.dir=/usr/lib/android-sdk" > buildozer.spec || true
           buildozer android debug
