@@ -6,25 +6,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install System Dependencies
+      - name: Install dependencies
         run: |
-          sudo dpkg --add-architecture i386
           sudo apt-get update
-          # استخدام libtinfo-dev بدلاً من libtinfo5 لحل مشكلة الفشل
-          sudo apt-get install -y build-essential ccache git libncurses5:i386 libstdc++6:i386 libgtk2.0-0:i386 libpangox-1.0-0 libpangoxft-1.0-0 libidn11 libglu1-mesa:i386 libasound2:i386 libffi-dev libssl-dev libsqlite3-dev openjdk-17-jdk unzip autoconf libtool pkg-config zlib1g-dev libncursesw5-dev libncurses5-dev libtinfo-dev
-          pip install --upgrade pip setuptools wheel Cython buildozer
+          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libffi-dev libssl-dev cmake
+          pip install --upgrade buildozer cython
 
       - name: Build APK
+        # أضفت log_level=2 لرؤية كل تفصيل صغير يحدث
         run: |
-          mkdir -p ~/.android
-          # نستخدم echo لإعادة تهيئة ملف التراخيص
-          echo "sdk.dir=/usr/lib/android-sdk" > buildozer.spec || true
-          buildozer android debug
+          buildozer -v android debug
