@@ -10,9 +10,12 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
+          sudo apt-get install -y python3-pip git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libffi-dev libssl-dev cmake
           pip3 install --upgrade buildozer cython
           
       - name: Build with Buildozer
+        env:
+          # هذا السطر هو مفتاح الحل، فهو يوافق على التراخيص تلقائياً
+          ANDROIDSDK: "true"
         run: |
-          buildozer android debug
+          yes | buildozer android debug
